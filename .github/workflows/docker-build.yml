@@ -22,5 +22,5 @@ jobs:
          run: | 
              printenv
              docker build -t javaapp .
-             docker tag javaapp:latest frankisinfotech/cohort-4-java:v1
-             docker push frankisinfotech/cohort-4-java:v1
+             docker tag javaapp:latest frankisinfotech/cohort-4-java:${GITHUB_RUN_NUMBER}
+             docker push frankisinfotech/cohort-4-java:${GITHUB_RUN_NUMBER}
