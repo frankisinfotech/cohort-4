@@ -1,0 +1,19 @@
+name: Build DockerImage
+
+on: push
+
+jobs:
+
+    build-to-dockerhub:
+       runs-on: ubuntu-latest
+
+       steps:
+
+       - name: Code Checkout
+         uses: actions/checkout@v4.1.7
+
+       - name: Docker Login
+         uses: docker/login-action@v3.3.0
+         with:
+            username: ${{ secrets.DH_USERNAME }}
+            password: ${{ secrets.DH_PASSWORD }}
