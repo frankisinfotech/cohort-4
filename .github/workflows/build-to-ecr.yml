@@ -4,7 +4,7 @@ on: push
 
 jobs:
 
-    build-to-dockerhub:
+    authenticate-to-aws:
        runs-on: ubuntu-latest
  
        steps:
@@ -22,6 +22,7 @@ jobs:
 
     build-to-pub-ecr:
        runs-on: ubuntu-latest
+       needs:  authenticate-to-aws:
 
        steps:
 
@@ -43,3 +44,29 @@ jobs:
              docker build -t javaapps .
              docker tag javaapps:latest public.ecr.aws/g0b5g9q2/javaapps:${GITHUB_RUN_NUMBER}
              docker push public.ecr.aws/g0b5g9q2/javaapps:${GITHUB_RUN_NUMBER}
+
+
+    build-to-private-ecr:
+       runs-on: ubuntu-latest
+       needs:  build-to-pub-ecr:
+
+       steps:
+
+       - name: Code Checkout
+         uses: actions/checkout@v4.1.7
+
+       - name: Login to ECR
+         uses: docker/login-action@v3.3.0
+
+         with:
+           registry: 765176032689.dkr.ecr.eu-west-1.amazonaws.com
+           username: ${{ secrets.ACCESS_KEY }}
+           password: ${{ secrets.SECRET_KEY }}
+         env:
+           aws-region: ${{ secrets.REGION }}
+
+       - name: BuildImage
+         run: |
+             docker build -t javaapi .
+             docker tag javaapi:latest 765176032689.dkr.ecr.eu-west-1.amazonaws.com/javaapi:${GITHUB_RUN_NUMBER}
+             docker push 765176032689.dkr.ecr.eu-west-1.amazonaws.com/javaapi:${GITHUB_RUN_NUMBER}
