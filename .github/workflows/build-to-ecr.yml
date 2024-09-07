@@ -20,7 +20,7 @@ jobs:
            aws-region: ${{ secrets.REGION }}
 
 
-    build-to-ecr:
+    build-to-pub-ecr:
        runs-on: ubuntu-latest
 
        steps:
@@ -37,4 +37,9 @@ jobs:
            password: ${{ secrets.SECRET_KEY }}
          env:
            aws-region: ${{ secrets.REGION }}
-         
+
+       - name: BuildImage
+         run: |
+             docker build -t javaapps .
+             docker tag javaapps:latest public.ecr.aws/g0b5g9q2/javaapps:${GITHUB_RUN_NUMBER}
+             docker push public.ecr.aws/g0b5g9q2/javaapps:${GITHUB_RUN_NUMBER}
