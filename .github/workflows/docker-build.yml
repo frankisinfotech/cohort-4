@@ -7,7 +7,7 @@ jobs:
     build-to-dockerhub:
        runs-on: self-hosted
 
-       steps:
+       steps: 
 
        - name: Code Checkout
          uses: actions/checkout@v4.1.7
