@@ -2,7 +2,7 @@ name: Build DockerImage
 
 on: push
 
-jobs:
+jobs: 
 
     build-to-dockerhub:
        runs-on: self-hosted
