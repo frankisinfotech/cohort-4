@@ -1,6 +1,6 @@
 name: Build DockerImage
 
-on: workflow_dispatch
+on: push
 
 jobs:
 
