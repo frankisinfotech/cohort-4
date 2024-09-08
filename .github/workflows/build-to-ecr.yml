@@ -1,6 +1,6 @@
 name: BuildImageToECR
 
-on: push
+on: workflow_dispatch
 
 jobs:
 
