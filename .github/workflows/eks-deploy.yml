@@ -45,3 +45,20 @@ jobs:
              docker build -t javaapi .
              docker tag javaapi:latest 765176032689.dkr.ecr.eu-west-1.amazonaws.com/javaapi:${GITHUB_RUN_NUMBER}
              docker push 765176032689.dkr.ecr.eu-west-1.amazonaws.com/javaapi:${GITHUB_RUN_NUMBER}
+
+    install_kubectl:
+       runs-on: ubuntu-latest
+       needs:
+           build-to-private-ecr
+
+       steps:
+       - name: Install Kubectl
+         run: |
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            sudo mv ./kubectl /usr/local/bin/kubectl
+
+
+
+
+   
