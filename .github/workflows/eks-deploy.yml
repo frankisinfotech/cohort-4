@@ -1,0 +1,47 @@
+name: BuildImageToECR
+
+on: push
+
+jobs:
+
+    authenticate-to-aws:
+       runs-on: ubuntu-latest
+ 
+       steps:
+
+       - name: Code Checkout
+         uses: actions/checkout@v4.1.7
+
+       - name: Login to AWS
+         uses: aws-actions/configure-aws-credentials@v4
+         with:
+           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+           aws-region: ${{ secrets.AWS_REGION }}
+
+
+    build-to-private-ecr:
+       runs-on: ubuntu-latest
+       needs:  
+           authenticate-to-aws
+
+       steps:
+
+       - name: Code Checkout
+         uses: actions/checkout@v4.1.7
+
+       - name: Login to ECR
+         uses: docker/login-action@v3.3.0
+
+         with:
+           registry: 765176032689.dkr.ecr.eu-west-1.amazonaws.com
+           username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+           password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+         env:
+           aws-region: ${{ secrets.AWS_REGION }}
+
+       - name: BuildImage
+         run: |
+             docker build -t javaapi .
+             docker tag javaapi:latest 765176032689.dkr.ecr.eu-west-1.amazonaws.com/javaapi:${GITHUB_RUN_NUMBER}
+             docker push 765176032689.dkr.ecr.eu-west-1.amazonaws.com/javaapi:${GITHUB_RUN_NUMBER}
